@@ -1,0 +1,17 @@
+{
+  "name": "photographer-shoot-manager",
+  "version": "1.0.0",
+  "description": "摄影师拍摄管理与日历订阅系统",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build:client": "cd client && npm run build",
+    "postinstall": "cd client && npm install"
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  }
+}
