@@ -209,7 +209,6 @@ export default function EventsPage() {
                       <EventCard
                         event={event}
                         onClick={handleOpenEdit}
-                        onDelete={handleDelete}
                       />
                       {/* 长按删除按钮 */}
                       <button

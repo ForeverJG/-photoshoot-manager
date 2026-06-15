@@ -1,6 +1,6 @@
-import { Clock, MapPin, User, ChevronRight, Check, X, Banknote } from 'lucide-react';
+import { Clock, MapPin, ChevronRight, Check, X } from 'lucide-react';
 
-export default function EventCard({ event, onClick, onDelete }) {
+export default function EventCard({ event, onClick }) {
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
     return `${d.getMonth() + 1}月${d.getDate()}日 周${['日','一','二','三','四','五','六'][d.getDay()]}`;

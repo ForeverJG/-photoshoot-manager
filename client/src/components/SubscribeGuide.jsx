@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Copy, Check, Apple, Smartphone, Info, X } from 'lucide-react';
+import { Copy, Check, Apple, Smartphone, Info, X } from 'lucide-react';
 
 export default function SubscribeGuide({ onClose }) {
   const [copied, setCopied] = useState(false);

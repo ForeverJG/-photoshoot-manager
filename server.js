@@ -13,9 +13,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// 等待数据库初始化完毕
-let dbReady = false;
-dbPromise.then(() => { dbReady = true; });
+// 等待数据库初始化完毕（各路由通过 await dbPromise 确保 DB 就绪）
 
 // ==================== API 路由 ====================
 
