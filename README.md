@@ -2,6 +2,9 @@
 
 专为摄影师设计的移动端拍摄管理工具。核心功能是通过生成 **ICS 日历订阅链接**，让用户用手机自带日历 App 订阅后，自动同步拍摄日程并弹窗提醒。
 
+- 🔗 **公网访问**：https://photoshoot-manager-production-0133.up.railway.app
+- 📂 **代码仓库**：https://github.com/ForeverJG/-photoshoot-manager
+
 ## 功能概览
 
 - **拍摄事件管理**：添加/编辑/删除拍摄，包含模特、时间、地点、道具、定金尾款等
@@ -16,10 +19,18 @@
 
 | 层级 | 技术 |
 |------|------|
-| 后端 | Node.js + Express + SQLite (better-sqlite3) |
+| 后端 | Node.js + Express + SQLite（sql.js） |
 | 前端 | React 18 + Vite + TailwindCSS 3 |
-| 天气 | Open-Meteo API（免费、无需 Key） |
+| 天气 | Open-Meteo API（免费、无需 Key） + wttr.in 降级 |
 | 日历 | RFC 5545 标准 ICS 文件 |
+| 部署 | Railway（免费额度） |
+
+## 关键设计说明
+
+- **sql.js 替代 better-sqlite3**：better-sqlite3 需要 C++ 编译环境（Visual Studio），在 Windows 上安装失败率高。sql.js 是纯 JS/WASM 实现，无需编译，跨平台兼容，Railway 上也能直接运行。
+- **前端构建产物提交到 Git**：`client/dist/` 已提交到仓库，Railway 部署时无需执行构建步骤，避免网络问题导致构建失败。
+- **数据库持久化**：通过 `DATA_DIR` 环境变量指定数据库存储路径，配合 Railway Volume 挂载实现数据持久化。
+- **ICS 天气**：生成日历时实时调用 Open-Meteo API 获取拍摄当天天气，失败时自动降级到 wttr.in，都失败则显示"天气信息暂不可用"。
 
 ## 本地运行
 
@@ -59,18 +70,18 @@ cd client && npm run dev
 
 ## 部署指南
 
-### 方案一：Railway（推荐）
-
-Railway 支持长运行进程 + 持久化磁盘，适合 SQLite。
+### 方案一：Railway（当前使用）
 
 1. 将项目推送到 GitHub
-2. 在 [Railway](https://railway.app) 中 New Project → Deploy from GitHub Repo
-3. 选择仓库，Railway 会自动识别 Node.js 项目
-4. **重要**：添加一个 Volume 挂载到 `/app` 以持久化 `data.db`
-5. 设置 Build Command：`cd client && npm install && npm run build && cd .. && npm install`
-6. 设置 Start Command：`npm start`
-7. 部署完成后，Railway 会分配一个域名如 `https://xxx.up.railway.app`
-8. 日历订阅链接即为：`https://你的域名.up.railway.app/calendar.ics`
+2. 在 [Railway](https://railway.app) 用 GitHub 登录
+3. New Project → GitHub Repository → 搜索并选择仓库
+4. 部署自动开始（前端已预构建，无需额外 Build Command）
+5. **配置持久化**：Service → Settings → Networking → Generate Domain（获取公网域名）
+   - 添加 Volume：挂载路径 `/app/data`，大小 1 GB
+   - 添加环境变量：Name=`DATA_DIR`，Value=`/app/data`
+6. 完成后获得域名 `https://xxx.up.railway.app`
+   - 管理界面：直接访问该域名
+   - 日历订阅：`https://xxx.up.railway.app/calendar.ics`
 
 ### 方案二：VPS / 云服务器
 
